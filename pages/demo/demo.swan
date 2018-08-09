@@ -1,0 +1,5 @@
+
+<import src="../../swanParse/swanParse.swan" />
+<view class="swanParse">
+    <template is="swanParse" data="{{ {swanParseData:article.nodes} }}" />
+</view>

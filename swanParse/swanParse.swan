@@ -1,0 +1,957 @@
+<!--基础元素-->
+<template name="swanParseVideo">
+  <!--增加video标签支持，并循环添加-->
+  <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+    <video class="{{item.classStr}} swanParse-{{item.tag}}-video" src="{{item.attr.src}}"></video>
+  </view>
+</template>
+
+<template name="swanParseImg">
+  <image class="{{item.classStr}} swanParse-{{item.tag}}" data-from="{{item.from}}" data-src="{{item.attr.src}}" data-idx="{{item.imgIndex}}" src="{{item.attr.src}}" mode="aspectFit" bindload="swanParseImgLoad" bindtap="swanParseImgTap" style="width:{{item.width}}px;"></image>
+</template>
+
+<template name="swanEmojiView">
+  <view class="swanEmojiView swanParse-inline" style="{{item.styleStr}}">
+    <block s-for="{{item.textArray}}" s-key="">
+      <block class="{{item.text == '\\n' ? 'swanParse-hide':''}}" s-if="item.node == 'text'">{{item.text}}</block>
+      <block s-elif="item.node == 'element'">
+        <image class="swanEmoji" src="{{item.baseSrc}}{{item.text}}"></image>
+      </block>
+    </block>
+  </view>
+</template>
+
+<template name="swanParseBr">
+  <text>\n</text>
+</template>
+<!--入口模版-->
+
+<template name="swanParse">
+  <block s-for="item, index in swanParseData" s-key="index">
+    <template is="swanParse0" data="{{ {item} }}" />
+  </block>
+</template>
+
+
+<!--循环模版-->
+<template name="swanParse0">
+  <!--<template is="swanParse1" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="item.nodes" s-for-item="item" s-key="index">
+          <template is="swanParse1" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse1" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse1" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+    <block s-elif="item.tag == 'table'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse1" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse1" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse1" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+
+
+<!--循环模版-->
+<template name="swanParse1">
+  <!--<template is="swanParse2" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse2" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse2" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse2" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse2" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse2" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+
+<!--循环模版-->
+<template name="swanParse2">
+  <!--<template is="swanParse3" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse3" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse3" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse3" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse3" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse3" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse3">
+  <!--<template is="swanParse4" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse4" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse4" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse4" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse4" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse4" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse4">
+  <!--<template is="swanParse5" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse5" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse5" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse5" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse5" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse5" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse5">
+  <!--<template is="swanParse6" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse6" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse6" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse6" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse6" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse6" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse6">
+  <!--<template is="swanParse7" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse7" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse7" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse7" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse7" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse7" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+<!--循环模版-->
+<template name="swanParse7">
+  <!--<template is="swanParse8" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse8" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse8" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse8" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse8" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse8" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse8">
+  <!--<template is="swanParse9" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse9" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse9" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse9" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse9" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse9" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse9">
+  <!--<template is="swanParse10" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse10" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse10" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse10" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse10" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse10" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse10">
+  <!--<template is="swanParse11" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse11" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse11" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse11" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse11" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse11" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>
+
+<!--循环模版-->
+<template name="swanParse11">
+  <!--<template is="swanParse12" data="{{ {item} }}" />-->
+  <!--判断是否是标签节点-->
+  <block s-if="item.node == 'element'">
+    <block s-if="item.tag == 'button'">
+      <button type="default" size="mini">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse12" data="{{ {item} }}" />
+        </block>
+      </button>
+    </block>
+    <!--li类型-->
+    <block s-elif="item.tag == 'li'">
+      <view class="{{item.classStr}} swanParse-li" style="{{item.styleStr}}">
+        <view class="{{item.classStr}} swanParse-li-inner">
+          <view class="{{item.classStr}} swanParse-li-text">
+            <view class="{{item.classStr}} swanParse-li-circle"></view>
+          </view>
+          <view class="{{item.classStr}} swanParse-li-text">
+            <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+              <template is="swanParse12" data="{{ {item} }}" />
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!--video类型-->
+    <block s-elif="item.tag == 'video'">
+      <template is="swanParseVideo" data="{{ {item} }}" />
+    </block>
+
+    <!--img类型-->
+    <block s-elif="item.tag == 'img'">
+      <template is="swanParseImg" data="{{ {item} }}" />
+    </block>
+
+    <!--a类型-->
+    <block s-elif="item.tag == 'a'">
+      <view bindtap="swanParseTagATap" class="swanParse-inline {{item.classStr}} swanParse-{{item.tag}}" data-src="{{item.attr.href}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse12" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <block s-elif="item.tag == 'br'">
+      <template is="swanParseBr" />
+    </block>
+    <!--其他块级标签-->
+    <block s-elif="item.tagType == 'block'">
+      <view class="{{item.classStr}} swanParse-{{item.tag}}" style="{{item.styleStr}}">
+        <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+          <template is="swanParse12" data="{{ {item} }}" />
+        </block>
+      </view>
+    </block>
+
+    <!--内联标签-->
+    <view s-else class="{{item.classStr}} swanParse-{{item.tag}} swanParse-{{item.tagType}}" style="{{item.styleStr}}">
+      <block s-for="{{item.nodes}}" s-for-item="item" s-key="">
+        <template is="swanParse12" data="{{ {item} }}" />
+      </block>
+    </view>
+
+  </block>
+
+  <!--判断是否是文本节点-->
+  <block s-elif="item.node == 'text'">
+    <!--如果是，直接进行-->
+    <template is="swanEmojiView" data="{{ {item} }}" />
+  </block>
+
+</template>

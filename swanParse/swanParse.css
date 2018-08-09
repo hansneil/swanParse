@@ -1,0 +1,265 @@
+
+/**
+ * @file swanParse.css
+ * @author yuxianbo
+ */
+
+.swanParse {
+    margin: 0 5px;
+    font-family: Helvetica, sans-serif;
+    font-size: 28rpx;
+    line-height: 1.8;
+    color: #666;
+}
+view {
+    overflow: auto;
+    word-break: break-all;
+}
+.swanParse-inline {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+/*//标题 */
+.swanParse-div {
+    margin: 0;
+    padding: 0;
+}
+.swanParse-h1 {
+    margin: .67em 0;
+    font-size: 2em;;
+}
+.swanParse-h2 {
+    margin: .75em 0;
+    font-size: 1.5em;;
+}
+.swanParse-h3 {
+    margin: .83em 0;
+    font-size: 1.17em;;
+}
+.swanParse-h4 {
+    margin: 1.12em 0;
+}
+.swanParse-h5 {
+    margin: 1.5em 0;
+    font-size: .83em;;
+}
+.swanParse-h6 {
+    margin: 1.67em 0;
+    font-size: .75em;;
+}
+
+.swanParse-h1 {
+    margin-bottom: .9em;
+    font-size: 18px;
+    font-weight: 400;
+}
+.swanParse-h2 {
+    margin-bottom: .34em;
+    font-size: 16px;
+    font-weight: 400;
+}
+.swanParse-h3 {
+    margin-bottom: .34em;
+    font-size: 15px;
+    font-weight: 400;
+}
+.swanParse-h4 {
+    margin-bottom: .24em;
+    font-size: 14px;
+    font-weight: 400;
+}
+.swanParse-h5 {
+    margin-bottom: .14em;
+    font-size: 13px;
+    font-weight: 400;
+}
+.swanParse-h6 {
+    margin-bottom: .04em;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.swanParse-h1,
+.swanParse-h2,
+.swanParse-h3,
+.swanParse-h4,
+.swanParse-h5,
+.swanParse-h6,
+.swanParse-b,
+.swanParse-strong {
+    font-weight: 700;
+}
+
+.swanParse-i,
+.swanParse-cite,
+.swanParse-em,
+.swanParse-var,
+.swanParse-address {
+    font-style: italic;
+}
+.swanParse-pre,
+.swanParse-tt,
+.swanParse-code,
+.swanParse-kbd,
+.swanParse-samp {
+    font-family: monospace;
+}
+.swanParse-pre {
+    white-space: pre;
+}
+.swanParse-big {
+    font-size: 1.17em;
+}
+.swanParse-small,
+.swanParse-sub,
+.swanParse-sup {
+    font-size: .83em;
+}
+.swanParse-sub {
+    vertical-align: sub;
+}
+.swanParse-sup {
+    vertical-align: super;
+}
+.swanParse-s,
+.swanParse-strike,
+.swanParse-del {
+    text-decoration: line-through;
+}
+/*swanparse-自定义个性化的css样式*/
+/*增加video的css样式*/
+.swanParse-strong,
+.swanParse-s {
+    display: inline;
+}
+.swanParse-a {
+    overflow: auto;
+    word-break: break-all;
+    color: #00bfff;
+}
+
+.swanParse-video {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.swanParse-video-video {
+    width: 100%;
+}
+
+.swanParse-img {
+    /*background-color: #efefef;*/
+    overflow: hidden;
+}
+
+.swanParse-blockquote {
+    margin: 0;
+    padding: 10px 0 10px 5px;
+    border-left: 3px solid #dbdbdb;
+    font-family: Courier, Calibri, "宋体";
+    background: #f5f5f5;
+}
+
+.swanParse-code,
+.swanParse-swanxxcode-style {
+    display: inline;
+    background: #f5f5f5;
+}
+.swanParse-ul {
+    margin: 20rpx 10rpx;
+}
+
+.swanParse-li,
+.swanParse-li-inner {
+    display: flex;
+    margin: 10rpx 0;
+
+    align-items: baseline;
+}
+.swanParse-li-text {
+    line-height: 20px;
+
+    align-items: center;
+}
+
+.swanParse-li-circle {
+    display: inline-flex;
+    width: 5px;
+    height: 5px;
+    margin-right: 5px;
+    background-color: #333;
+}
+
+.swanParse-li-square {
+    display: inline-flex;
+    width: 10rpx;
+    height: 10rpx;
+    margin-right: 5px;
+    background-color: #333;
+}
+.swanParse-li-ring {
+    display: inline-flex;
+    width: 10rpx;
+    height: 10rpx;
+    margin-right: 5px;
+    border: 2rpx solid #333;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+/*.swanParse-table{
+    width: 100%;
+    height: 400px;
+}
+.swanParse-thead,.swanParse-tfoot,.swanParse-tr{
+    display: flex;
+    flex-direction: row;
+}
+.swanParse-th,.swanParse-td{
+    display: flex;
+    width: 580px;
+    overflow: auto;
+}*/
+
+.swanParse-u {
+    text-decoration: underline;
+}
+.swanParse-hide {
+    display: none;
+}
+.swanEmojiView {
+    align-items: center;
+}
+.swanEmoji {
+    width: 16px;
+    height: 16px;
+}
+.swanParse-tr {
+    display: flex;
+    border-top: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.swanParse-th,
+.swanParse-td {
+    padding: 5px;
+    border-left: 1px solid #e0e0e0;
+    font-size: 28rpx;
+    word-break: break-all;
+
+    flex: 1;
+}
+.swanParse-td:last {
+    border-top: 1px solid #e0e0e0;
+}
+.swanParse-th {
+    border-top: 1px solid #e0e0e0;
+    background: #f0f0f0;
+}
+.swanParse-del {
+    display: inline;
+}
+.swanParse-figure {
+    overflow: hidden;
+}

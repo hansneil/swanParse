@@ -1,0 +1,11 @@
+{
+    "pages":[
+        "pages/demo/demo"
+    ],
+    "window":{
+        "backgroundTextStyle":"light",
+        "navigationBarBackgroundColor": "#000",
+        "navigationBarTitleText": "Swan Parse",
+        "navigationBarTextStyle":"white"
+    }
+}
